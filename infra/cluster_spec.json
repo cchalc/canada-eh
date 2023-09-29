@@ -1,0 +1,31 @@
+{
+    "num_workers": 0,
+    "cluster_name": "cjc-dbconnect",
+    "spark_version": "13.3.x-scala2.12",
+    "spark_conf": {
+        "spark.databricks.cluster.profile": "singleNode",
+        "spark.master": "local[*, 4]"
+    },
+    "aws_attributes": {
+        "first_on_demand": 1,
+        "availability": "SPOT_WITH_FALLBACK",
+        "zone_id": "auto",
+        "spot_bid_price_percent": 100,
+        "ebs_volume_count": 0
+    },
+    "node_type_id": "i3.xlarge",
+    "driver_node_type_id": "i3.xlarge",
+    "ssh_public_keys": [],
+    "custom_tags": {
+        "ResourceClass": "SingleNode"
+    },
+    "spark_env_vars": {},
+    "autotermination_minutes": 40,
+    "enable_elastic_disk": false,
+    "cluster_source": "UI",
+    "init_scripts": [],
+    "single_user_name": "christopher.chalcraft@databricks.com",
+    "enable_local_disk_encryption": false,
+    "data_security_mode": "SINGLE_USER",
+    "runtime_engine": "STANDARD"
+}

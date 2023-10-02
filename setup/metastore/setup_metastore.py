@@ -1,4 +1,13 @@
 # Databricks notebook source
+# setup widgets
+dbutils.widgets.text("domain_name", '')
+
+# COMMAND ----------
+
+# dbutils.widgets.removeAll()
+
+# COMMAND ----------
+
 # MAGIC %pip install azure-storage-file-datalake azure-identity
 
 # COMMAND ----------
@@ -11,15 +20,22 @@ dbutils.library.restartPython()
 
 # COMMAND ----------
 
-storage_account_name = "canadaehstorage"
-container_name = "cjc"
-company_name = "company1"
-domain_name = "domain1"
-tenant_id = "9f37a392-f0ae-4280-9796-f1864a10effc" # Microsoft Entra ID
-
+domain_name = dbutils.widgets.get("domain_name")
 
 # COMMAND ----------
 
+storage_account_name = "canadaehstorage"
+container_name = "cjc"
+company_name = "company1"
+# domain_name = "domain1"
+tenant_id = "9f37a392-f0ae-4280-9796-f1864a10effc" # Microsoft Entra ID
+database_name = f"{domain_name}"
+adls_path = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net"
+directory_path = f'{adls_path}/{company_name}/{database_name}'
+
+# COMMAND ----------
+
+# Set up azure key valut backed secret scope before hand
 storage_account_key = dbutils.secrets.get("rgscope", "canada-eh-storage-account-key")
 
 # COMMAND ----------
@@ -71,13 +87,7 @@ spark.conf.set(
 # COMMAND ----------
 
 # List the files in the container
-dbutils.fs.ls(f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/company1/domain1")
-
-# COMMAND ----------
-
-database_name = f"{domain_name}"
-adls_path = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net"
-directory_path = f'{adls_path}/{company_name}/{database_name}'
+# dbutils.fs.ls(f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/company1/domain1")
 
 # COMMAND ----------
 

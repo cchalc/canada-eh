@@ -1,5 +1,5 @@
 # Databricks notebook source
-# %sql DROP SCHEMA IF EXISTS source2 CASCADE;
+# %sql DROP SCHEMA IF EXISTS source2_1 CASCADE;
 
 # COMMAND ----------
 
@@ -66,7 +66,7 @@ def create_external_tables(domain_path, source, db):
 sources = get_last_dir(f"{adls_path}/{company}/{domain}")
 for source in sources:
     dbname = spark.sql(f"show schemas in hive_metastore like '{source}'")
-    if dbname.take(1) == 0:
+    if dbname.count() == 0:
         db = source
         print("empty")
     else:

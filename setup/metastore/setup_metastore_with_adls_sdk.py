@@ -150,4 +150,29 @@ create_external_tables(adls_path=adls_path, database_name=domain_name)
 
 # COMMAND ----------
 
+# MAGIC %md cluster policy
 
+# COMMAND ----------
+
+from databricks_client import DatabricksAPI
+
+# Configure your Databricks workspace and credentials
+host = "YOUR_WORKSPACE_HOST"
+token = "YOUR_ACCESS_TOKEN"
+api = DatabricksAPI(host=host, token=token)
+
+# Define the Single Node cluster policy JSON payload
+single_node_policy = {
+  "name": "Single Node Policy",
+  "description": "A Single Node cluster policy",
+  "spark_version": "7.3.x-scala2.12",
+  "node_type_id": "Standard_DS3_v2",
+  "num_workers": 0,
+  "autoscale": {
+    "min_workers": 0,
+    "max_workers": 0
+  }
+}
+
+# Create the Single Node cluster policy
+api.cluster_policies.create(single_node_policy)

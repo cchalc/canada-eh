@@ -4,7 +4,8 @@
 # COMMAND ----------
 
 # setup widgets
-dbutils.widgets.text("domain", '')
+dbutils.widgets.text("domain", 'domain1')
+dbutils.widgets.dropdown("run", 'false', ['true', 'false'])
 
 # COMMAND ----------
 
@@ -71,7 +72,30 @@ def create_external_tables(domain_path, source, db):
 
 # COMMAND ----------
 
-sources = get_last_dir(f"{adls_path}/{company}/{domain}")
-for source in sources:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
-    create_external_tables(domain_path, source, db)
+if dbutils.widgets.get("run") == "true":
+    sources = get_last_dir(f"{adls_path}/{company}/{domain}")
+    for source in sources:
+        spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
+        create_external_tables(domain_path, source, db)
+
+# COMMAND ----------
+
+# explore try catch
+tables = get_last_dir(f"{domain_path}/{source}")
+for table in tables:
+    if DeltaTable.isDeltaTable(spark, f"{domain_path}/{source}/{table}"):
+        try:
+            table_script = f"""
+            CREATE EXTERNAL TABLE IF NOT EXISTS {db}.{table}
+            USING DELTA
+            LOCATION '{domain_path}/{source}/{table}'
+            """
+            print(source, table, table_script)
+        except Exception as e:
+            print(f"Error: {e}")
+    else:
+        print(f"{domain_path}/{source}/{table} is not a delta table")
+
+# COMMAND ----------
+
+

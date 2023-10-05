@@ -61,7 +61,7 @@ def create_external_tables(domain_path, source, db):
     for table in tables:
         if DeltaTable.isDeltaTable(spark, f"{domain_path}/{source}/{table}"):
             table_script = f"""
-            CREATE TABLE IF NOT EXISTS {db}.{table}
+            CREATE EXTERNAL TABLE IF NOT EXISTS {db}.{table}
             USING DELTA
             LOCATION '{domain_path}/{source}/{table}'
             """

@@ -20,6 +20,11 @@ domain = dbutils.widgets.get("domain")
 
 # COMMAND ----------
 
+# imports
+from delta.tables import *
+
+# COMMAND ----------
+
 storage_account_name = "canadaehstorage"
 container = "cjc"
 company = "company1"
@@ -54,23 +59,19 @@ def get_last_dir(file_path):
 def create_external_tables(domain_path, source, db):
     tables = get_last_dir(f"{domain_path}/{source}")
     for table in tables:
-        table_script = f"""
-        CREATE TABLE IF NOT EXISTS {db}.{table}
-        USING DELTA
-        LOCATION '{domain_path}/{source}/{table}'
-        """
-        spark.sql(table_script)
+        if DeltaTable.isDeltaTable(spark, f"{domain_path}/{source}/{table}"):
+            table_script = f"""
+            CREATE TABLE IF NOT EXISTS {db}.{table}
+            USING DELTA
+            LOCATION '{domain_path}/{source}/{table}'
+            """
+            spark.sql(table_script)
+        else:
+            print(f"{domain_path}/{source}/{table} is not a delta table")
 
 # COMMAND ----------
 
 sources = get_last_dir(f"{adls_path}/{company}/{domain}")
 for source in sources:
-    dbname = spark.sql(f"show schemas in hive_metastore like '{source}'")
-    if dbname.count() == 0:
-        db = source
-        print("empty")
-    else:
-        db = f"{source}_1"
-        print("not empty")
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
     create_external_tables(domain_path, source, db)

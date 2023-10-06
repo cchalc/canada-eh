@@ -67,7 +67,7 @@ def create_external_tables(domain_path, source, db):
                 """
                 spark.sql(table_script)
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"Error: {e}. Please check {domain_path}/{source}/{table}")
         else:
             print(f"{domain_path}/{source}/{table} is not a delta table")
 

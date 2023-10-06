@@ -17,10 +17,6 @@ dbutils.widgets.dropdown("run", 'false', ['true', 'false'])
 
 # COMMAND ----------
 
-
-
-# COMMAND ----------
-
 # imports
 from delta.tables import *
 
